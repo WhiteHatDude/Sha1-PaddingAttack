@@ -35,7 +35,7 @@ def _long2bytesBigEndian(n, blocksize=0):
     """
 
     # After much testing, this algorithm was deemed to be the fastest.
-    s = ''
+    s = b''
     pack = struct.pack
     while n > 0:
         s = pack('>I', n & 0xffffffff) + s
@@ -43,11 +43,11 @@ def _long2bytesBigEndian(n, blocksize=0):
 
     # Strip off leading zeros.
     for i in range(len(s)):
-        if s[i] != '\000':
+        if s[i] != 0:
             break
     else:
         # Only happens when n == 0.
-        s = '\000'
+        s = b'\000'
         i = 0
 
     s = s[i:]
@@ -55,7 +55,7 @@ def _long2bytesBigEndian(n, blocksize=0):
     # Add back some pad bytes. This could be done more efficiently
     # w.r.t. the de-padding being done above, but sigh...
     if blocksize > 0 and len(s) % blocksize:
-        s = (blocksize - len(s) % blocksize) * '\000' + s
+        s = (blocksize - len(s) % blocksize) * b'\000' + s
 
     return s
 
@@ -279,7 +279,7 @@ class sha:
         else:
             padLen = 120 - index
 
-        padding = ['\200'] + ['\000'] * 63
+        padding = [b'\200'] + [b'\000'] * 63
         self.update(padding[:padLen])
 
         # Append length (before padding).
@@ -313,7 +313,7 @@ class sha:
         used to exchange the value safely in email or other non-
         binary environments.
         """
-        return ''.join(['%02x' % ord(c) for c in self.digest()])
+        return ''.join(['%02x' % c for c in self.digest()])
 
     def copy(self):
         """Return a clone object.
