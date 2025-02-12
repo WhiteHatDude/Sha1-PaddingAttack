@@ -38,7 +38,7 @@ class shaext:
 	def init(self):
 
 		count = (self.keylen + len(self.origtext)) * 8
-		index = (count >> 3) & 0x3fL
+		index = (count >> 3) & 0x3f
 		padLen = 120 - index
         	if index < 56:
             		padLen = 56 - index
@@ -49,7 +49,7 @@ class shaext:
 		self.m = sha.new()	
         	self.m.count = [0, count]
         	     
-        	_digest = self.origsig.decode("hex")
+        	_digest = bytes.fromhex(self.origsig)
         	(self.m.H0, self.m.H1, self.m.H2, self.m.H3, self.m.H4) = struct.unpack(">IIIII", _digest)
 		
 	def add(self, addtext):
