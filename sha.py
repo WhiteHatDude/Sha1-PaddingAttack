@@ -69,10 +69,10 @@ def _bytelist2longBigEndian(list):
     j = 0
     i = 0
     while i < imax:
-        b0 = int(ord(list[j])) << 24
-        b1 = int(ord(list[j+1])) << 16
-        b2 = int(ord(list[j+2])) << 8
-        b3 = int(ord(list[j+3]))
+        b0 = list[j] << 24
+        b1 = list[j+1] << 16
+        b2 = list[j+2] << 8
+        b3 = list[j+3]
         hl[i] = b0 | b1 | b2 | b3
         i = i+1
         j = j+4
@@ -279,7 +279,7 @@ class sha:
         else:
             padLen = 120 - index
 
-        padding = [b'\200'] + [b'\000'] * 63
+        padding = [0x80] + [0x00] * 63
         self.update(padding[:padLen])
 
         # Append length (before padding).
