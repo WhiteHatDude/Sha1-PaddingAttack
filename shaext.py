@@ -31,7 +31,7 @@ class shaext:
 		self.origtext = origtext 
 		self.keylen = keylen
 		self.origsig = origsig
-		self.addtext = ''
+		self.addtext = b''
 		self.init()
 
 	def init(self):
@@ -52,8 +52,8 @@ class shaext:
 		(self.m.H0, self.m.H1, self.m.H2, self.m.H3, self.m.H4) = struct.unpack(">IIIII", _digest)
 		
 	def add(self, addtext):
-		self.addtext = self.addtext + addtext
-		self.m.update(addtext)
+		self.addtext = self.addtext + addtext.encode()
+		self.m.update(addtext.encode())
 		
 	def final(self):
 		new_sig = self.m.hexdigest()
