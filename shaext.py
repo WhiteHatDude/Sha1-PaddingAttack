@@ -39,17 +39,17 @@ class shaext:
 		count = (self.keylen + len(self.origtext)) * 8
 		index = (count >> 3) & 0x3f
 		padLen = 120 - index
-        if index < 56:
-            padLen = 56 - index
-        padding = b'\x80' + b'\x00' * 63
+		if index < 56:
+			padLen = 56 - index
+		padding = b'\x80' + b'\x00' * 63
         
-        self.input = self.origtext.encode() + padding[:padLen] + struct.pack('>Q', count)
-        count = (self.keylen + len(self.input)) * 8
+		self.input = self.origtext.encode() + padding[:padLen] + struct.pack('>Q', count)
+		count = (self.keylen + len(self.input)) * 8
 		self.m = sha.new()	
-        self.m.count = [0, count]
+		self.m.count = [0, count]
                
-        _digest = bytes.fromhex(self.origsig)
-        (self.m.H0, self.m.H1, self.m.H2, self.m.H3, self.m.H4) = struct.unpack(">IIIII", _digest)
+		_digest = bytes.fromhex(self.origsig)
+		(self.m.H0, self.m.H1, self.m.H2, self.m.H3, self.m.H4) = struct.unpack(">IIIII", _digest)
 		
 	def add(self, addtext):
 		self.addtext = self.addtext + addtext
