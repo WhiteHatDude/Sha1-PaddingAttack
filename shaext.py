@@ -3,7 +3,6 @@
 # sha1 padding/length extension attack class
 # by rd@vnsecurity.net
 #
-
 import sha
 import struct 
 import base64
@@ -32,29 +31,29 @@ class shaext:
 		self.origtext = origtext 
 		self.keylen = keylen
 		self.origsig = origsig
-		self.addtext = ''
+		self.addtext = b''
 		self.init()
 
 	def init(self):
 
 		count = (self.keylen + len(self.origtext)) * 8
-		index = (count >> 3) & 0x3fL
+		index = (count >> 3) & 0x3f
 		padLen = 120 - index
-        	if index < 56:
-            		padLen = 56 - index
-	        padding = '\x80' + '\x00' * 63
-	        
-        	self.input = self.origtext + padding[:padLen] + struct.pack('>Q', count)
-        	count = (self.keylen + len(self.input)) * 8
+		if index < 56:
+			padLen = 56 - index
+		padding = b'\x80' + b'\x00' * 63
+        
+		self.input = self.origtext.encode() + padding[:padLen] + struct.pack('>Q', count)
+		count = (self.keylen + len(self.input)) * 8
 		self.m = sha.new()	
-        	self.m.count = [0, count]
-        	     
-        	_digest = self.origsig.decode("hex")
-        	(self.m.H0, self.m.H1, self.m.H2, self.m.H3, self.m.H4) = struct.unpack(">IIIII", _digest)
+		self.m.count = [0, count]
+               
+		_digest = bytes.fromhex(self.origsig)
+		(self.m.H0, self.m.H1, self.m.H2, self.m.H3, self.m.H4) = struct.unpack(">IIIII", _digest)
 		
 	def add(self, addtext):
-		self.addtext = self.addtext + addtext
-		self.m.update(addtext)
+		self.addtext = self.addtext + addtext.encode()
+		self.m.update(addtext.encode())
 		
 	def final(self):
 		new_sig = self.m.hexdigest()
